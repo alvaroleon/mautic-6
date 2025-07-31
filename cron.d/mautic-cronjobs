@@ -1,0 +1,35 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=""
+OUT=/proc/1/fd/1
+ERR=/proc/1/fd/2
+PHP_INI_VALUE_MEMORY_LIMIT=512M
+PHP_INI_VALUE_DATE_TIMEZONE=America/Santiago
+
+* * * * *     www-data php /var/www/html/bin/console mautic:segments:update --batch-limit=500 >>$OUT 2>>$ERR
+
+*/5 * * * *   www-data php /var/www/html/bin/console mautic:import                                      >>$OUT 2>>$ERR
+
+* * * * *     www-data php /var/www/html/bin/console mautic:campaigns:rebuild                           >>$OUT 2>>$ERR
+
+* * * * *     www-data php /var/www/html/bin/console mautic:campaigns:trigger                           >>$OUT 2>>$ERR
+
+* * * * *     www-data php /var/www/html/bin/console mautic:messages:send                               >>$OUT 2>>$ERR
+
+0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:email:fetch                            >>$OUT 2>>$ERR
+
+0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:social:monitoring                      >>$OUT 2>>$ERR
+
+0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:webhooks:process                       >>$OUT 2>>$ERR
+
+0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:broadcasts:send                        >>$OUT 2>>$ERR
+
+* 1 * * *     www-data php /var/www/html/bin/console mautic:maintenance:cleanup --days-old=365          >>$OUT 2>>$ERR
+
+0 4 15 * *    www-data php /var/www/html/bin/console mautic:iplookup:download                           >>$OUT 2>>$ERR
+
+*/5 * * * *   www-data php /var/www/html/bin/console mautic:reports:scheduler                           >>$OUT 2>>$ERR
+
+0 5 10 * *    www-data php /var/www/html/bin/console mautic:unusedip:delete                             >>$OUT 2>>$ERR
+
+
