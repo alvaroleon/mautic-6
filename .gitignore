@@ -1,3 +1,14 @@
 .env
 /logs/
-/config/local.php
+/config/
+!/config/.gitkeep
+/media/files/
+!/media/files/.gitkeep
+/media/images/
+!/media/images/.gitkeep
+/var/tmp/
+!/var/tmp/.gitkeep
+/var/import/
+!/var/import/.gitkeep
+/var/logs/
+!/var/logs/.gitkeep
