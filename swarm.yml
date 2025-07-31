@@ -1,0 +1,147 @@
+x-mautic-volumes:
+  &mautic-volumes
+  - /docker/mautic/wait-for-db.sh:/usr/local/bin/wait-for-db.sh:ro
+  - /docker/mautic/config:/var/www/html/config:z
+  - /docker/mautic/logs:/var/www/html/var/logs:z
+  - /docker/mautic/var/tmp:/var/www/html/var/tmp:z
+  - /docker/mautic/media/files:/var/www/html/docroot/media/files:z
+  - /docker/mautic/media/images:/var/www/html/docroot/media/images:z
+  - /docker/mautic/import:/var/www/html/var/import:z
+#  - /docker/mautic/www:/var/www/html/docroot:z
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: mautic
+
+    networks:
+      - mautic-net
+  db:
+    image: mysql:lts
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+      restart_policy:
+        condition: on-failure
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - db_data3:/var/lib/mysql
+    networks:
+      - mautic-net
+
+  mautic_web:
+    image: mocadev/mautic:6-apache
+    entrypoint:
+      - "/bin/bash"
+      - "/usr/local/bin/wait-for-db.sh"
+      - "/entrypoint.sh"
+    command:
+      - "apache2-foreground"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "${MAUTIC_WEB_PORT:-9002}:80"
+    volumes: *mautic-volumes
+    environment:
+      MAUTIC_DB_HOST: ${MYSQL_HOST:-db}
+      MAUTIC_DB_PORT: ${MYSQL_PORT:-3306}
+      MAUTIC_DB_DATABASE: ${MYSQL_DATABASE}
+      MAUTIC_DB_USER: ${MYSQL_USER}
+      MAUTIC_DB_PASSWORD: ${MYSQL_PASSWORD}
+      PHP_INI_VALUE_DATE_TIMEZONE: ${PHP_TIMEZONE:-UTC}
+      DOCKER_MAUTIC_ROLE: mautic_web
+      DOCKER_MAUTIC_LOAD_TEST_DATA: "${DOCKER_MAUTIC_LOAD_TEST_DATA}"
+      DOCKER_MAUTIC_RUN_MIGRATIONS: "${DOCKER_MAUTIC_RUN_MIGRATIONS}"
+      PHP_INI_VALUE_MEMORY_LIMIT: "3G"
+      MAUTIC_SITE_URL: "${MAUTIC_SITE_URL}"
+    networks:
+      - mautic-net
+      - devbox-net
+    depends_on:
+      - db
+      - rabbitmq
+  mautic_cron:
+    image: mocadev/mautic:6-apache
+    entrypoint:
+      - "/bin/bash"
+      - "/usr/local/bin/wait-for-db.sh"
+      - "/entrypoint.sh"
+    command:
+      - "cron"
+      - "-f"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes: 
+      - /docker/mautic/wait-for-db.sh:/usr/local/bin/wait-for-db.sh:ro
+      - /docker/mautic/config:/var/www/html/config:z
+      - /docker/mautic/logs:/var/www/html/var/logs:z
+      - /docker/mautic/var/tmp:/var/www/html/var/tmp:z
+      - /docker/mautic/media/files:/var/www/html/docroot/media/files:z
+      - /docker/mautic/media/images:/var/www/html/docroot/media/images:z
+      - /docker/mautic/import:/var/www/html/var/import:z
+#      - /docker/mautic/www:/var/www/html/docroot:z
+      - /docker/mautic/cron.d:/etc/cron.d
+    environment:
+      MAUTIC_DB_HOST: ${MYSQL_HOST:-db}
+      MAUTIC_DB_PORT: ${MYSQL_PORT:-3306}
+      MAUTIC_DB_DATABASE: ${MYSQL_DATABASE}
+      MAUTIC_DB_USER: ${MYSQL_USER}
+      MAUTIC_DB_PASSWORD: ${MYSQL_PASSWORD}
+      PHP_INI_VALUE_DATE_TIMEZONE: "${PHP_TIMEZONE:-UTC}"
+      DOCKER_MAUTIC_ROLE: mautic_cron
+      PHP_INI_VALUE_MEMORY_LIMIT: "3G"
+      MAUTIC_SITE_URL: "${MAUTIC_SITE_URL}"
+    depends_on:
+      - mautic_web
+      - rabbitmq
+    networks:
+      - mautic-net
+      - devbox-net
+  mautic_worker:
+    image: mocadev/mautic:6-apache
+    entrypoint:
+      - "/bin/bash"
+      - "/usr/local/bin/wait-for-db.sh"
+      - "/entrypoint.sh"
+    command:
+      - "bin/console"
+      - "mautic:queue:process"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes: *mautic-volumes
+    environment:
+      MAUTIC_DB_HOST: ${MYSQL_HOST:-db}
+      MAUTIC_DB_PORT: ${MYSQL_PORT:-3306}
+      MAUTIC_DB_DATABASE: ${MYSQL_DATABASE}
+      MAUTIC_DB_USER: ${MYSQL_USER}
+      MAUTIC_DB_PASSWORD: ${MYSQL_PASSWORD}
+      PHP_INI_VALUE_DATE_TIMEZONE: "${PHP_TIMEZONE:-UTC}"
+      PHP_INI_VALUE_MEMORY_LIMIT: "3G" 
+      DOCKER_MAUTIC_ROLE: mautic_worker
+
+    depends_on:
+      - mautic_web
+      - rabbitmq
+    networks:
+      - mautic-net
+      - devbox-net
+networks:
+  mautic-net:
+  devbox-net:
+    external: true
+
+volumes:
+  db_data3:
