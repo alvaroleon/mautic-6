@@ -1,5 +1,4 @@
 .env
-/logs/
 /config/
 !/config/.gitkeep
 /media/files/
@@ -8,7 +7,7 @@
 !/media/images/.gitkeep
 /var/tmp/
 !/var/tmp/.gitkeep
-/var/import/
-!/var/import/.gitkeep
-/var/logs/
-!/var/logs/.gitkeep
+/import/
+!/import/.gitkeep
+/logs/
+!/logs/.gitkeep
