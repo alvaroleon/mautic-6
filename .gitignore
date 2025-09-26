@@ -1,4 +1,6 @@
 .env
+/backup
+!/backup/.gitkeep
 /config/
 !/config/.gitkeep
 /media/files/
