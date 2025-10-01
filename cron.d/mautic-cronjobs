@@ -6,43 +6,43 @@ BASH_ENV=/tmp/cron.env
 # ---------------------------
 # Segments Update - cada minuto
 
-* * * * * www-data php /var/www/html/bin/console mautic:segments:update --batch-limit=500 2>&1 | tee -a /proc/1/fd/1
+* * * * * root php /var/www/html/bin/console mautic:segments:update --batch-limit=500 2>&1 | tee -a /proc/1/fd/1
 
 # Import Contacts - cada 5 min
-*/5 * * * * www-data php /var/www/html/bin/console mautic:import 2>&1 | tee -a /proc/1/fd/1
+*/5 * * * * root php /var/www/html/bin/console mautic:import 2>&1 | tee -a /proc/1/fd/1
 
 # Campaigns Rebuild - cada minuto
-* * * * * www-data php /var/www/html/bin/console mautic:campaigns:rebuild 2>&1 | tee -a /proc/1/fd/1
+* * * * * root php /var/www/html/bin/console mautic:campaigns:rebuild 2>&1 | tee -a /proc/1/fd/1
 
 # Campaigns Trigger - cada minuto
-* * * * * www-data php /var/www/html/bin/console mautic:campaigns:trigger 2>&1 | tee -a /proc/1/fd/1
+* * * * * root php /var/www/html/bin/console mautic:campaigns:trigger 2>&1 | tee -a /proc/1/fd/1
 
 # Messages Send - cada minuto
-* * * * * www-data php /var/www/html/bin/console mautic:messages:send 2>&1 | tee -a /proc/1/fd/1
+* * * * * root php /var/www/html/bin/console mautic:messages:send 2>&1 | tee -a /proc/1/fd/1
 
 # Email Fetch - cada 15 min
-0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:email:fetch 2>&1 | tee -a /proc/1/fd/1
+0,15,30,45 * * * * root php /var/www/html/bin/console mautic:email:fetch 2>&1 | tee -a /proc/1/fd/1
 
 # Social Monitoring - cada 15 min
-0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:social:monitoring 2>&1 | tee -a /proc/1/fd/1
+0,15,30,45 * * * * root php /var/www/html/bin/console mautic:social:monitoring 2>&1 | tee -a /proc/1/fd/1
 
 # Webhooks Process - cada 15 min
-0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:webhooks:process 2>&1 | tee -a /proc/1/fd/1
+0,15,30,45 * * * * root php /var/www/html/bin/console mautic:webhooks:process 2>&1 | tee -a /proc/1/fd/1
 
 # Broadcasts Send - cada 15 min
-0,15,30,45 * * * * www-data php /var/www/html/bin/console mautic:broadcasts:send 2>&1 | tee -a /proc/1/fd/1
+0,15,30,45 * * * * root php /var/www/html/bin/console mautic:broadcasts:send 2>&1 | tee -a /proc/1/fd/1
 
 # Cleanup - diario a la 1 AM
-* 1 * * * www-data php /var/www/html/bin/console mautic:maintenance:cleanup --days-old=365 2>&1 | tee -a /proc/1/fd/1
+* 1 * * * root php /var/www/html/bin/console mautic:maintenance:cleanup --days-old=365 2>&1 | tee -a /proc/1/fd/1
 
 # IP Lookup Download - el día 15 de cada mes a las 4 AM
-0 4 15 * * www-data php /var/www/html/bin/console mautic:iplookup:download 2>&1 | tee -a /proc/1/fd/1
+0 4 15 * * root php /var/www/html/bin/console mautic:iplookup:download 2>&1 | tee -a /proc/1/fd/1
 
 # Reports Scheduler - cada 5 min
-*/5 * * * * www-data php /var/www/html/bin/console mautic:reports:scheduler 2>&1 | tee -a /proc/1/fd/1
+*/5 * * * * root php /var/www/html/bin/console mautic:reports:scheduler 2>&1 | tee -a /proc/1/fd/1
 
 # Unused IP Delete - el día 10 de cada mes a las 5:00 AM
-0 5 10 * * www-data php /var/www/html/bin/console mautic:unusedip:delete 2>&1 | tee -a /proc/1/fd/1
+0 5 10 * * root php /var/www/html/bin/console mautic:unusedip:delete 2>&1 | tee -a /proc/1/fd/1
 
 
 # ---------------------------
@@ -50,18 +50,18 @@ BASH_ENV=/tmp/cron.env
 # ---------------------------
 
 # Campaigns Update - cada 15 min (si quieres diferenciar de rebuild/trigger)
-5,20,35,50 * * * * www-data php /var/www/html/bin/console mautic:campaigns:update 2>&1 | tee -a /proc/1/fd/1
+5,20,35,50 * * * * root php /var/www/html/bin/console mautic:campaigns:update 2>&1 | tee -a /proc/1/fd/1
 
 # Contacts Scheduled Export - cada 3 min
-*/3 * * * * www-data php /var/www/html/bin/console mautic:contacts:scheduled_export 2>&1 | tee -a /proc/1/fd/1
+*/3 * * * * root php /var/www/html/bin/console mautic:contacts:scheduled_export 2>&1 | tee -a /proc/1/fd/1
 
 # GeoLite2 IP database update - cada hora
-#0 * * * * www-data php /var/www/html/bin/console mautic:iplookup:download 2>&1 | tee -a /proc/1/fd/1
+#0 * * * * root php /var/www/html/bin/console mautic:iplookup:download 2>&1 | tee -a /proc/1/fd/1
 
 # CCPA compliance tasks (solo si aplica)
-#2 3 * * 0 www-data php /var/www/html/bin/console mautic:donotsell:download 2>&1 | tee -a /proc/1/fd/1
-#12 3 * * 0 www-data php /var/www/html/bin/console mautic:max-mind:purge 2>&1 | tee -a /proc/1/fd/1
+#2 3 * * 0 root php /var/www/html/bin/console mautic:donotsell:download 2>&1 | tee -a /proc/1/fd/1
+#12 3 * * 0 root php /var/www/html/bin/console mautic:max-mind:purge 2>&1 | tee -a /proc/1/fd/1
 
 # Integrations (fetchleads/pushactivity) - cada 13 min (usar con precaución)
-#*/13 * * * 0 www-data php /var/www/html/bin/console mautic:integration:fetchleads 2>&1 | tee -a /proc/1/fd/1
-#*/13 * * * 0 www-data php /var/www/html/bin/console mautic:integration:pushactivity 2>&1 | tee -a /proc/1/fd/1
+#*/13 * * * 0 root php /var/www/html/bin/console mautic:integration:fetchleads 2>&1 | tee -a /proc/1/fd/1
+#*/13 * * * 0 root php /var/www/html/bin/console mautic:integration:pushactivity 2>&1 | tee -a /proc/1/fd/1
