@@ -56,16 +56,16 @@ trait EntityContactsTrait
                         'page'            => $page,
                         'items'           => [], // return 0 contacts if user has no permissions
                         'totalItems'      => 0,
-                        'tmpl'            => $sessionVar.'Contacts',
+                        'tmpl'            => $sessionVar . 'Contacts',
                         'indexMode'       => 'grid',
                         'routeParameters' => $routeParameters,
-                        'sessionVar'      => $sessionVar.'.contact',
+                        'sessionVar'      => $sessionVar . '.contact',
                         'objectId'        => $entityId,
                         'target'          => $paginationTarget,
                     ],
                     'contentTemplate' => '@MauticLead/Lead/grid.html.twig',
                     'passthroughVars' => [
-                        'mauticContent' => $sessionVar.'Contacts',
+                        'mauticContent' => $sessionVar . 'Contacts',
                         'route'         => false,
                     ],
                 ]
@@ -75,25 +75,25 @@ trait EntityContactsTrait
         // Set the route if not standardized
         $route = "mautic_{$sessionVar}_contacts";
         if (method_exists($this, 'getRouteBase') && $this->getRouteBase()) {
-            $route = 'mautic_'.$this->getRouteBase().'_contacts';
+            $route = 'mautic_' . $this->getRouteBase() . '_contacts';
         }
 
         // Apply filters
         if ('POST' == $request->getMethod()) {
-            $this->setListFilters($sessionVar.'.contact');
+            $this->setListFilters($sessionVar . '.contact');
         }
 
-        $search = $request->get('search', $request->getSession()->get('mautic.'.$sessionVar.'.contact.filter', ''));
-        $request->getSession()->set('mautic.'.$sessionVar.'.contact.filter', $search);
+        $search = $request->get('search', $request->getSession()->get('mautic.' . $sessionVar . '.contact.filter', ''));
+        $request->getSession()->set('mautic.' . $sessionVar . '.contact.filter', $search);
 
         $pageHelper = $pageHelperFactory->make("mautic.{$sessionVar}", $page);
 
         $filter     = ['string' => $search, 'force' => []];
-        $orderBy    = $orderBy ?: $request->getSession()->get('mautic.'.$sessionVar.'.contact.orderby', 'l.id');
-        $orderByDir = $orderByDir ?: $request->getSession()->get('mautic.'.$sessionVar.'.contact.orderbydir', 'DESC');
+        $orderBy    = $orderBy ?: $request->getSession()->get('mautic.' . $sessionVar . '.contact.orderby', 'l.id');
+        $orderByDir = $orderByDir ?: $request->getSession()->get('mautic.' . $sessionVar . '.contact.orderbydir', 'DESC');
 
         $limit = $request->getSession()->get(
-            'mautic.'.$sessionVar.'.contact.limit',
+            'mautic.' . $sessionVar . '.contact.limit',
             $this->coreParametersHelper->get('default_pagelimit')
         );
 
@@ -148,7 +148,7 @@ trait EntityContactsTrait
                     'contentTemplate'   => '@MauticLead/Lead/grid.html.twig',
                     'forwardController' => false,
                     'passthroughVars'   => [
-                        'mauticContent' => $sessionVar.'Contacts',
+                        'mauticContent' => $sessionVar . 'Contacts',
                     ],
                 ]
             );
@@ -171,11 +171,11 @@ trait EntityContactsTrait
                     'page'            => $page,
                     'items'           => $contacts['results'],
                     'totalItems'      => $contacts['count'],
-                    'tmpl'            => $sessionVar.'Contacts',
+                    'tmpl'            => $sessionVar . 'Contacts',
                     'indexMode'       => 'grid',
                     'route'           => $route,
                     'routeParameters' => $routeParameters,
-                    'sessionVar'      => $sessionVar.'.contact',
+                    'sessionVar'      => $sessionVar . '.contact',
                     'limit'           => $limit,
                     'objectId'        => $entityId,
                     'noContactList'   => $dnc,
@@ -183,7 +183,7 @@ trait EntityContactsTrait
                 ],
                 'contentTemplate' => '@MauticLead/Lead/grid.html.twig',
                 'passthroughVars' => [
-                    'mauticContent' => $sessionVar.'Contacts',
+                    'mauticContent' => $sessionVar . 'Contacts',
                     'route'         => false,
                 ],
             ]
