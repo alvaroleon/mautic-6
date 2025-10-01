@@ -29,7 +29,7 @@
     "composer/installers": "^1.11",
     "kuzmany/mautic-amazon-ses": "dev-main",
     "mautic/core-composer-scaffold": "4.x-dev",
-    "mautic/core-lib": "6.0.3",
+    "mautic/core-lib": "6.0.6",
     "mautic/core-project-message": "4.x-dev",
     "mautic/grapes-js-builder-bundle": "6.0.3",
     "mautic/plugin-clearbit": "6.0.3",
