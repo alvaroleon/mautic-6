@@ -1,12 +1,11 @@
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 BASH_ENV=/tmp/cron.env
-PHP_INI_VALUE_MEMORY_LIMIT=512M
-PHP_INI_VALUE_DATE_TIMEZONE=America/Santiago
 # ---------------------------
 # Tus comandos (prioridad)
 # ---------------------------
 # Segments Update - cada minuto
+
 * * * * * root php /var/www/html/bin/console mautic:segments:update --batch-limit=500 2>&1 | tee -a /proc/1/fd/1
 
 # Import Contacts - cada 5 min
