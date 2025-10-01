@@ -144,17 +144,7 @@ trait EntityContactsTrait
             return $this->postActionRedirect(
                 [
                     'returnUrl'         => $returnUrl,
-                    'viewParameters'    => [
-                        'page'            => $lastPage,
-                        'objectId'        => $entityId,
-                        'items'           => [],
-                        'totalItems'      => 0,
-                        'tmpl'            => $sessionVar.'Contacts',
-                        'indexMode'       => 'grid',
-                        'routeParameters' => $routeParameters,
-                        'sessionVar'      => $sessionVar.'.contact',
-                        'limit'           => $limit,
-                    ],
+                    'viewParameters'    => ['page' => $lastPage, 'objectId' => $entityId],
                     'contentTemplate'   => '@MauticLead/Lead/grid.html.twig',
                     'forwardController' => false,
                     'passthroughVars'   => [
