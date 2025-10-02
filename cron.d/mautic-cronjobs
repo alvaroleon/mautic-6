@@ -4,21 +4,11 @@ BASH_ENV=/tmp/cron.env
 # ---------------------------
 # Tus comandos (prioridad)
 # ---------------------------
-# Segments Update - cada minuto
 
-* * * * * root php /var/www/html/bin/console mautic:segments:update --batch-limit=500 2>&1 | tee -a /proc/1/fd/1
+* * * * * root /run-cron.sh 2>&1 | tee -a /proc/1/fd/1
 
 # Import Contacts - cada 5 min
 */5 * * * * root php /var/www/html/bin/console mautic:import 2>&1 | tee -a /proc/1/fd/1
-
-# Campaigns Rebuild - cada minuto
-* * * * * root php /var/www/html/bin/console mautic:campaigns:rebuild 2>&1 | tee -a /proc/1/fd/1
-
-# Campaigns Trigger - cada minuto
-* * * * * root php /var/www/html/bin/console mautic:campaigns:trigger 2>&1 | tee -a /proc/1/fd/1
-
-# Messages Send - cada minuto
-* * * * * root php /var/www/html/bin/console mautic:messages:send 2>&1 | tee -a /proc/1/fd/1
 
 # Email Fetch - cada 15 min
 0,15,30,45 * * * * root php /var/www/html/bin/console mautic:email:fetch 2>&1 | tee -a /proc/1/fd/1
@@ -48,9 +38,6 @@ BASH_ENV=/tmp/cron.env
 # ---------------------------
 # Comandos oficiales que faltaban (los dejo como referencia)
 # ---------------------------
-
-# Campaigns Update - cada 15 min (si quieres diferenciar de rebuild/trigger)
-5,20,35,50 * * * * root php /var/www/html/bin/console mautic:campaigns:update 2>&1 | tee -a /proc/1/fd/1
 
 # Contacts Scheduled Export - cada 3 min
 */3 * * * * root php /var/www/html/bin/console mautic:contacts:scheduled_export 2>&1 | tee -a /proc/1/fd/1
