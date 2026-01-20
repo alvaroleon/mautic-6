@@ -16,6 +16,11 @@
     "amazon",
     "ses"
   ],
+  "autoload": {
+    "psr-4": {
+      "MauticPlugin\\AmazonSESBundle\\": ""
+    }
+  },
   "extra": {
     "install-directory-name": "AmazonSESBundle"
   },

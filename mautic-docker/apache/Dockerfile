@@ -72,7 +72,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
  && rm -rf /var/lib/apt/lists/*
 
 # Define Mautic version by package tag
-ARG MAUTIC_VERSION=6.0.3
+ARG MAUTIC_VERSION=6.0.7
 
 RUN cd /opt \
  && COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_PROCESS_TIMEOUT=10000 \
